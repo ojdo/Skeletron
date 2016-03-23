@@ -41,7 +41,7 @@ from math import ceil, atan2
 from time import time
 
 from threading import Timer
-from thread import interrupt_main
+from _thread import interrupt_main
 
 import logging
     
@@ -152,7 +152,7 @@ def multigeom_centerline(multigeom, buffer=20, density=10, min_length=40, min_ar
         try:
             skeletons = polygon_skeleton_graphs(polygon, buffer, density)
         
-        except _QHullFailure, e:
+        except _QHullFailure as e:
             #
             # QHull failures here are usually signs of tiny geometries,
             # so they are usually fine to ignore completely and move on.
@@ -167,7 +167,7 @@ def multigeom_centerline(multigeom, buffer=20, density=10, min_length=40, min_ar
         try:
             routes = skeleton_routes(skeletons, min_length)
 
-        except _SignalAlarm, e:
+        except _SignalAlarm as e:
             # An alarm signal here means that graph_routes() went overtime.
             raise _GraphRoutesOvertime(skeletons)
         
@@ -282,7 +282,7 @@ def _graph_routes_main(graph, find_longest, time_coefficient=0.02):
             # move on to the next possible route
             break
     
-    print >> open('graph-routes-log.txt', 'a'), start_nodes, (time() - start_time)
+    print(start_nodes, (time() - start_time), file=open('graph-routes-log.txt', 'a'))
 
     return routes
 
@@ -291,7 +291,7 @@ def waynode_multilines(ways, nodes):
     """
     multilines = dict()
     
-    for way in ways.values():
+    for way in list(ways.values()):
         key = way['key']
         node_ids = way['nodes']
         
@@ -304,7 +304,7 @@ def waynode_multilines(ways, nodes):
         points = [mercator(*reversed(nodes[id])) for id in node_ids]
         multilines[key].append(LineString(points))
     
-    for (key, lines) in multilines.items():
+    for (key, lines) in list(multilines.items()):
         lines = [list(line.coords) for line in lines]
         multilines[key] = MultiLineString(lines)
     
@@ -321,10 +321,10 @@ def projected_multigeometry(geom):
     geoms = getattr(geom, 'geoms', [geom])
     
     if geom.type in ('LineString', 'MultiLineString'):
-        projected = MultiLineString(map(_m, geoms))
+        projected = MultiLineString(list(map(_m, geoms)))
     
     elif geom.type in ('Polygon', 'MultiPolygon'):
-        parts = [(_m(poly.exterior), map(_m, poly.interiors)) for poly in geoms]
+        parts = [(_m(poly.exterior), list(map(_m, poly.interiors))) for poly in geoms]
         projected = MultiPolygon(parts)
     
     else:
@@ -468,15 +468,15 @@ def polygon_dots_skeleton(polygon, points):
     if qvoronoi.returncode:
         raise _QHullFailure('Failed with code %s' % qvoronoi.returncode)
     
-    vert_count, poly_count = map(int, voronoi_lines[1].split()[:2])
+    vert_count, poly_count = list(map(int, voronoi_lines[1].split()[:2]))
     
     for (index, line) in enumerate(voronoi_lines[2:2+vert_count]):
-        point = Point(*map(float, line.split()[:2]))
+        point = Point(*list(map(float, line.split()[:2])))
         if point.within(polygon):
             skeleton.add_node(index, dict(point=point))
     
     for line in voronoi_lines[2+vert_count:2+vert_count+poly_count]:
-        indexes = map(int, line.split()[1:])
+        indexes = list(map(int, line.split()[1:]))
         for (v, w) in zip(indexes, indexes[1:] + indexes[:1]):
             if v not in skeleton.node or w not in skeleton.node:
                 continue

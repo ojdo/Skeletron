@@ -13,7 +13,7 @@ g = p.parse(stdin)
 output = dict(type='FeatureCollection', features=[])
 
 for key in g:
-    print key
+    print(key)
     network = g[key]
     
     if not network.edges():

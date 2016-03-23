@@ -58,7 +58,7 @@ for (x, y) in points:
     ctx.set_source_rgb(.6, .6, .6)
     ctx.fill()
 
-print 'qhull...'
+print('qhull...')
 
 rbox = '\n'.join( ['2', str(len(points))] + ['%.2f %.2f' % (x, y) for (x, y) in points] + [''] )
 
@@ -68,19 +68,19 @@ qhull.stdin.close()
 sleep(1) # qhull.wait()
 qhull = qhull.stdout.read().splitlines()
 
-vert_count, poly_count = map(int, qhull[1].split()[:2])
+vert_count, poly_count = list(map(int, qhull[1].split()[:2]))
 
-print 'graph...'
+print('graph...')
 
 skeleton = Graph()
 
 for (index, line) in enumerate(qhull[2:2+vert_count]):
-    point = Point(*map(float, line.split()[:2]))
+    point = Point(*list(map(float, line.split()[:2])))
     if point.within(polygon):
         skeleton.add_node(index, dict(point=point))
 
 for line in qhull[2 + vert_count:2 + vert_count + poly_count]:
-    indexes = map(int, line.split()[1:])
+    indexes = list(map(int, line.split()[1:]))
     for (v, w) in zip(indexes, indexes[1:] + indexes[:1]):
         if v not in skeleton.node or w not in skeleton.node:
             continue
@@ -89,7 +89,7 @@ for line in qhull[2 + vert_count:2 + vert_count + poly_count]:
         if line.within(polygon):
             skeleton.add_edge(v, w, dict(line=line, length=line.length))
 
-print 'trim...'
+print('trim...')
 
 removing = True
 
@@ -105,7 +105,7 @@ while removing:
                 skeleton.remove_node(index)
                 removing = True
 
-print 'draw...'
+print('draw...')
 
 for index in skeleton.nodes():
     point = skeleton.node[index]['point']

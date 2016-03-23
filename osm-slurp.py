@@ -11,9 +11,9 @@ from Skeletron.draw import Canvas
 p = ParserOSM()
 g = p.parse(stdin)
 
-print sorted(g.keys())
+print(sorted(g.keys()))
 
-network = g[(u'Lakeside Drive', u'secondary')]
+network = g[('Lakeside Drive', 'secondary')]
 
 if not network.edges():
     exit(1)

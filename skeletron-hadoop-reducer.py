@@ -24,7 +24,7 @@ if __name__ == '__main__':
         try:
             features.extend(hadoop_line_features(line))
         
-        except Exception, e:
+        except Exception as e:
             logging.error(str(e))
             continue
 

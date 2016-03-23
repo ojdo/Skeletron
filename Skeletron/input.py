@@ -86,7 +86,7 @@ def parse_route_relation_waynodes(input, merge_highways):
     while changing:
         changing = False
     
-        for rel in rels.values():
+        for rel in list(rels.values()):
             parts = rel['parts']
 
             for (index, part) in enumerate(parts):
@@ -127,7 +127,7 @@ def parse_route_relation_waynodes(input, merge_highways):
     highways = dict(motorway=9, trunk=8, primary=7, secondary=6, tertiary=5)
     net_refs = dict()
     
-    for rel in rels.values():
+    for rel in list(rels.values()):
         for part in rel['parts']:
             # we know from above that they're all "way:".
             way_id = part[4:]
@@ -164,7 +164,7 @@ def parse_route_relation_waynodes(input, merge_highways):
         # Run through the list again, assigning largest highway
         # values from net_refs dictionary to each way key.
         #
-        for (key, rel_way) in rel_ways.items():
+        for (key, rel_way) in list(rel_ways.items()):
             network, ref, modifier = rel_way['key']
             highway = net_refs[(network, ref, modifier)]
             rel_ways[key]['key'] = network, ref, modifier, highway

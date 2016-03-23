@@ -17,11 +17,11 @@ def write_groups(queue):
         try:
             group = queue.get(timeout=300)
         except:
-            print 'bah'
+            print('bah')
             break
         
         tree = make_group_tree(group)
-        file = BZ2File(names.next(), mode='w')
+        file = BZ2File(next(names), mode='w')
 
         tree.write(file)
         file.close()
@@ -212,7 +212,7 @@ def gen_relation_groups(relations):
         rel_coords = sum([len(line.coords) for line in way_lines if line])
         #multiline = cascaded_union(way_lines)
         
-        print >> stderr, ', '.join(key), '--', rel_coords, 'nodes'
+        print(', '.join(key), '--', rel_coords, 'nodes', file=stderr)
         
         group.append((id, tags, way_tags, way_lines))
         coords += rel_coords
@@ -228,23 +228,23 @@ def make_group_tree(group):
 
     for (id, tags, way_tags, way_lines) in group:
     
-        rel = Element('relation', dict(id=ids.next(), version='1', timestamp='0000-00-00T00:00:00Z'))
+        rel = Element('relation', dict(id=next(ids), version='1', timestamp='0000-00-00T00:00:00Z'))
         
-        for (k, v) in tags.items():
+        for (k, v) in list(tags.items()):
             rel.append(Element('tag', dict(k=k, v=v)))
         
         for (tags, line) in zip(way_tags, way_lines):
             if not line:
                 continue
         
-            way = Element('way', dict(id=ids.next(), version='1', timestamp='0000-00-00T00:00:00Z'))
+            way = Element('way', dict(id=next(ids), version='1', timestamp='0000-00-00T00:00:00Z'))
             
-            for (k, v) in tags.items():
+            for (k, v) in list(tags.items()):
                 way.append(Element('tag', dict(k=k, v=v)))
             
             for coord in line.coords:
                 lon, lat = '%.7f' % coord[0], '%.7f' % coord[1]
-                node = Element('node', dict(id=ids.next(), lat=lat, lon=lon, version='1', timestamp='0000-00-00T00:00:00Z'))
+                node = Element('node', dict(id=next(ids), lat=lat, lon=lon, version='1', timestamp='0000-00-00T00:00:00Z'))
                 nd = Element('nd', dict(ref=node.attrib['id']))
 
                 osm.append(node)
@@ -272,7 +272,7 @@ if __name__ == '__main__':
     for group in gen_relation_groups(relations):
         queue.put(group)
 
-        print >> stderr, '-->', len(group), 'relations'
-        print >> stderr, '-' * 80
+        print('-->', len(group), 'relations', file=stderr)
+        print('-' * 80, file=stderr)
     
     group_writer.join()

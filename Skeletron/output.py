@@ -15,7 +15,7 @@ def generalize_geojson_feature(feature, width, zoom):
     
         If generalization fails, return False.
     '''
-    prop = dict([(k.lower(), v) for (k, v) in feature['properties'].items()])
+    prop = dict([(k.lower(), v) for (k, v) in list(feature['properties'].items())])
     name = prop.get('name', prop.get('id', prop.get('gid', prop.get('fid', None))))
     geom = asShape(feature['geometry'])
 
@@ -64,7 +64,7 @@ def multilines_geojson(multilines, key_properties, buffer, density, min_length, 
         try:
             centerline = multigeom_centerline(multiline, buffer, density, min_length, min_area)
         
-        except _GraphRoutesOvertime, e:
+        except _GraphRoutesOvertime as e:
             #
             # Catch overtimes here because they seem to affect larger networks
             # and therefore most or all of a complex multiline. We'll keep the
@@ -95,7 +95,7 @@ def generalized_multiline(multiline, buffer, density, min_length, min_area):
     try:
         centerline = multigeom_centerline(multiline, buffer, density, min_length, min_area)
     
-    except Exception, e:
+    except Exception as e:
         raise
         logging.error(e)
         return None

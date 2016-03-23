@@ -36,14 +36,14 @@ if __name__ == '__main__':
                 logging.debug('Empty skeleton')
                 continue
             
-        except Exception, e:
+        except Exception as e:
             logging.error(str(e))
             continue
         
         if id is None:
             for (index, bone) in enumerate(bones):
                 logging.info('line %d of %d from %s' % (1 + index, len(bones), dumps(prop)))
-                print >> stdout, hadoop_feature_line(id, prop, bone)
+                print(hadoop_feature_line(id, prop, bone), file=stdout)
         else:
             logging.info('%d-part multiline from %s' % (len(bones), dumps(prop)))
-            print >> stdout, hadoop_feature_line(id, prop, skeleton)
+            print(hadoop_feature_line(id, prop, skeleton), file=stdout)

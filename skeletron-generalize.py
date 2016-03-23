@@ -57,7 +57,7 @@ if __name__ == '__main__':
             if not feature:
                 continue
 
-        except Exception, err:
+        except Exception as err:
             logging.error('Error on feature #%d: %s' % (index, err))
 
         else:
@@ -76,7 +76,7 @@ if __name__ == '__main__':
     # Output
     #
     
-    geojson = dict(type='FeatureCollection', features=filter(None, features))
+    geojson = dict(type='FeatureCollection', features=[_f for _f in features if _f])
     output = open(output_file, 'w')
 
     encoder = JSONEncoder(separators=(',', ':'))

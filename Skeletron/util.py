@@ -3,8 +3,8 @@ from math import hypot, ceil, sqrt, pi
 from base64 import b64encode, b64decode
 from json import loads as json_decode
 from json import dumps as json_encode
-from cPickle import loads as unpickle
-from cPickle import dumps as pickle
+from pickle import loads as unpickle
+from pickle import dumps as pickle
 from os.path import splitext
 from gzip import GzipFile
 from bz2 import BZ2File
@@ -46,7 +46,7 @@ def point_distance(a, b):
     try:
         return a.distance(b)
 
-    except ValueError, e:
+    except ValueError as e:
         if str(e) != 'Prepared geometries cannot be operated on':
             raise
         
@@ -64,7 +64,7 @@ def simplify_line_vw(points, small_area=100):
     
         popped, preserved = set(), set()
         
-        triples = zip(points[:-2], points[1:-1], points[2:])
+        triples = list(zip(points[:-2], points[1:-1], points[2:]))
         triangles = [Polygon((p1, p2, p3)) for (p1, p2, p3) in triples]
         areas = [(triangle.area, index) for (index, triangle) in enumerate(triangles)]
         

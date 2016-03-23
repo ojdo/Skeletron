@@ -63,18 +63,20 @@ if __name__ == '__main__':
     kwargs = dict(buffer=buffer, density=buffer/2, min_length=2*buffer, min_area=(buffer**2)/4)
     
     if options.use_highway:
-        def key_properties((name, highway)):
+        def key_properties(xxx_todo_changeme):
+            (name, highway) = xxx_todo_changeme
             return dict(name=name, highway=highway,
                         zoomlevel=options.zoom, pixelwidth=options.width,
                         shortname=short_street_name(name))
     else:
-        def key_properties((name, )):
+        def key_properties(xxx_todo_changeme1):
+            (name, ) = xxx_todo_changeme1
             return dict(name=name,
                         zoomlevel=options.zoom, pixelwidth=options.width,
                         shortname=short_street_name(name))
 
-    print >> stderr, 'Buffer: %(buffer).1f, density: %(density).1f, minimum length: %(min_length).1f, minimum area: %(min_area).1f.' % kwargs
-    print >> stderr, '-' * 20
+    print('Buffer: %(buffer).1f, density: %(density).1f, minimum length: %(min_length).1f, minimum area: %(min_area).1f.' % kwargs, file=stderr)
+    print('-' * 20, file=stderr)
 
     geojson = multilines_geojson(multilines, key_properties, **kwargs)
     output = open_file(output_file, 'w')

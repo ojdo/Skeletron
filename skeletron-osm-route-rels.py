@@ -66,11 +66,13 @@ if __name__ == '__main__':
     kwargs = dict(buffer=buffer, density=buffer/2, min_length=8*buffer, min_area=(buffer**2)/4)
     
     if options.merge_highways == 'yes':
-        def key_properties((network, ref, modifier)):
+        def key_properties(xxx_todo_changeme):
+            (network, ref, modifier) = xxx_todo_changeme
             return dict(network=network, ref=ref, modifier=modifier,
                         zoomlevel=options.zoom, pixelwidth=options.width)
     else:
-        def key_properties((network, ref, modifier, highway)):
+        def key_properties(xxx_todo_changeme1):
+            (network, ref, modifier, highway) = xxx_todo_changeme1
             return dict(network=network, ref=ref, modifier=modifier, highway=highway,
                         zoomlevel=options.zoom, pixelwidth=options.width)
 
